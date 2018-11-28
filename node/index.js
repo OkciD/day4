@@ -1,14 +1,14 @@
-"use strict";
+'use strict';
 
 // Подключаем модули
-let express = require("express");
+let express = require('express');
 let app = express();
 let pg = require('pg');
 
 // Разрешаем междоменные запросы
 app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     next();
 });
 
@@ -36,33 +36,33 @@ function makeQuery(query, resultObj, callback) {
 }
 
 // Создаем таблицу
-makeQuery("CREATE TABLE IF NOT EXISTS people (man_id BIGSERIAL PRIMARY KEY, man_nickname TEXT, man_age INTEGER);", {}, () => {
-      console.log("table was created")
+makeQuery('CREATE TABLE IF NOT EXISTS people (man_id BIGSERIAL PRIMARY KEY, man_nickname TEXT, man_age INTEGER);', {}, () => {
+      console.log('table was created')
 });
 
 // Описываем функцию для получения списка всех людей в БД
 app.get('/get_all_records', (request, response) => {
-   console.log("GET ALL RECORDS");
+   console.log('GET ALL RECORDS');
    let aaa = {
       arr: []
    };
 
-   makeQuery("SELECT * FROM people ORDER BY man_id ASC;", aaa, () => {
+   makeQuery('SELECT * FROM people ORDER BY man_id ASC;', aaa, () => {
        const answer = aaa.arr;
        response.end(JSON.stringify(answer));
-       console.log("get ans");
+       console.log('get ans');
    });
 });
 
 // HELLO NODE API
 app.get('/', (request, response) => {
-    response.end("HELLO NODE API");
+    response.end('HELLO NODE API');
 });
 
 // Описываем функцию для добавления человека в БД
 app.post('/add_one_record', (request, response) => {
-    console.log("POST ONE RECORD");
-    let bigString = "";
+    console.log('POST ONE RECORD');
+    let bigString = '';
     request.on('data', (data) => {
         bigString += data;
     }).on('end', () => {
@@ -75,16 +75,16 @@ app.post('/add_one_record', (request, response) => {
             arr: []
         };
 
-        makeQuery("SELECT * FROM people WHERE man_nickname = '" + nickname + "';", aaa, () => {
+        makeQuery('SELECT * FROM people WHERE man_nickname = "' + nickname + '";', aaa, () => {
             if(aaa.arr.length > 0) {
                 const answer = {
-                   message: "NO_ADDING"
+                   message: 'NO_ADDING'
                 };
                 response.end(JSON.stringify(answer));
             } else {
-                makeQuery("INSERT INTO people (man_nickname, man_age) VALUES ('" + nickname + "', " + age + ");", {}, () => {
+                makeQuery('INSERT INTO people (man_nickname, man_age) VALUES ("' + nickname + '", ' + age + ');', {}, () => {
                     const answer = {
-                        message: "ADDING_SUCCESS"
+                        message: 'ADDING_SUCCESS'
                     };
                     response.end(JSON.stringify(answer));
                 });
@@ -96,5 +96,5 @@ app.post('/add_one_record', (request, response) => {
 // Запускаем сервер
 let port = 80;
 app.listen(port);
-console.log("Server works on port " + port);
+console.log('Server works on port ' + port);
 

@@ -1,14 +1,14 @@
 {
-  "name": "node_api",
+  "name": "team02_node_server",
   "version": "1.0.0",
-  "description": "node_api",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
   },
-  "keywords": [],
-  "author": "Kolotovkin Maxim",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OkciD/iu6_hackathon_2018.git"
+  },
   "license": "ISC",
   "dependencies": {
     "express": "^4.16.3",
