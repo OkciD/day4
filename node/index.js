@@ -35,9 +35,14 @@ function makeQuery(query, resultObj, callback) {
     });
 }
 
-// Создаем таблицу
+// Создаем таблицу people
 makeQuery('CREATE TABLE IF NOT EXISTS people (man_id BIGSERIAL PRIMARY KEY, man_nickname TEXT, man_age INTEGER);', {}, () => {
-      console.log('table was created')
+      console.log('table people was created')
+});
+
+// Создаем таблицу medParameters
+makeQuery('CREATE TABLE IF NOT EXISTS medParameters (med_param_id BIGSERIAL PRIMARY KEY, medParam TEXT, medParamValue FLOAT);', {}, () => {
+    console.log('table medParametrs was created')
 });
 
 // Описываем функцию для получения списка всех людей в БД
@@ -89,6 +94,41 @@ app.post('/add_one_record', (request, response) => {
                     response.end(JSON.stringify(answer));
                 });
             }
+        });
+    });
+});
+
+// Описываем функцию для мед парамера и его значения в БД
+app.post('/data', (request, response) => {
+    console.log('POST ONE RECORD');
+    let bigString = '';
+    request.on('error', (err) => {
+        console.error(err);
+    }).on('data', (data) => {
+        bigString += data;
+    }).on('end', () => {
+        response.on('error', (err) => {
+            console.error(err);
+        });
+
+        const dataObj = JSON.parse(bigString);
+
+        const medParam = dataObj.parameter;
+        const value = dataObj.value;
+
+        if (medParam !== 'pulse' && medParam !== 'calories' && medParam !== 'meditation' && medParam !== 'distance') {
+            const errorAnswer = {
+                message: 'parameter must belong to enum'
+            };
+            response.statusCode = 400;
+            response.end(JSON.stringify(errorAnswer))
+        }
+
+        makeQuery('INSERT INTO medParameters (medParam, medParamValue) VALUES (\'' + medParam + '\', ' + value + ');', {}, () => {
+            const answer = {
+                message: 'ADDING_SUCCESS'
+            };
+            response.end(JSON.stringify(answer));
         });
     });
 });
