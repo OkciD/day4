@@ -69,7 +69,7 @@ app.post('/data', (request, response) => {
 				message: 'parameter must belong to enum'
 			};
 			response.statusCode = 400;
-			response.end(JSON.stringify(errorAnswer))
+			response.end(JSON.stringify(errorAnswer));
 		}
 
 		makeQuery(`INSERT INTO medParameters (medParam, medParamValue) VALUES ('${medParam}', ${value});`, {}, () => {
@@ -81,8 +81,34 @@ app.post('/data', (request, response) => {
 	});
 });
 
+app.get('/data', (request, response) => {
+	const { offset, limit } = request.query;
+	const errorObject = [offset, limit].reduce(
+		(errorObject, param) => {
+			if (!param) {
+				return { [param]: 'undefined', ...errorObject };
+			} else if (isNaN(+param)) {
+				return { [param]: 'NaN', ...errorObject }
+			} else {
+				return errorObject;
+			}
+		},
+		{}
+	);
+
+	if (Object.keys(errorObject).length > 0) {
+		response.statusCode = 400;
+		response.end(JSON.stringify(errorObject));
+	}
+
+	const queryResult = { arr: [] };
+	makeQuery(`SELECT (medParam, medParamValue) FROM medParameters OFFSET ${offset} LIMIT ${limit}`, queryResult, () => {
+		response.end(JSON.stringify(queryResult.arr));
+	});
+});
+
 // Запускаем сервер
-let port = 80;
+const port = 80;
 app.listen(port);
-console.log('Server works on port ' + port);
+console.log(`Server works on port ${port}`);
 
