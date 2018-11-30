@@ -35,72 +35,20 @@ function makeQuery(query, resultObj, callback) {
 	});
 }
 
-// Создаем таблицу people
-makeQuery('CREATE TABLE IF NOT EXISTS people (man_id BIGSERIAL PRIMARY KEY, man_nickname TEXT, man_age INTEGER);', {}, () => {
-	console.log('table people was created')
-});
-
 // Создаем таблицу medParameters
 makeQuery('CREATE TABLE IF NOT EXISTS medParameters (med_param_id BIGSERIAL PRIMARY KEY, medParam TEXT, medParamValue FLOAT);', {}, () => {
 	console.log('table medParametrs was created')
 });
 
-// Описываем функцию для получения списка всех людей в БД
-app.get('/get_all_records', (request, response) => {
-	console.log('GET ALL RECORDS');
-	let aaa = {
-		arr: []
-	};
-
-	makeQuery('SELECT * FROM people ORDER BY man_id ASC;', aaa, () => {
-		const answer = aaa.arr;
-		response.end(JSON.stringify(answer));
-		console.log('get ans');
-	});
-});
-
 // HELLO NODE API
 app.get('/', (request, response) => {
-	response.end('HELLO NODE API');
-});
-
-// Описываем функцию для добавления человека в БД
-app.post('/add_one_record', (request, response) => {
-	console.log('POST ONE RECORD');
-	let bigString = '';
-	request.on('data', (data) => {
-		bigString += data;
-	}).on('end', () => {
-		const dataObj = JSON.parse(bigString);
-
-		const nickname = dataObj.nickname;
-		const age = dataObj.age;
-
-		let aaa = {
-			arr: []
-		};
-
-		makeQuery('SELECT * FROM people WHERE man_nickname = "' + nickname + '";', aaa, () => {
-			if(aaa.arr.length > 0) {
-				const answer = {
-					message: 'NO_ADDING'
-				};
-				response.end(JSON.stringify(answer));
-			} else {
-				makeQuery('INSERT INTO people (man_nickname, man_age) VALUES ("' + nickname + '", ' + age + ');', {}, () => {
-					const answer = {
-						message: 'ADDING_SUCCESS'
-					};
-					response.end(JSON.stringify(answer));
-				});
-			}
-		});
-	});
+	response.end('Team02 server');
 });
 
 // Описываем функцию для мед парамера и его значения в БД
 app.post('/data', (request, response) => {
 	console.log('POST ONE RECORD');
+
 	let bigString = '';
 	request.on('error', (err) => {
 		console.error(err);
@@ -116,7 +64,7 @@ app.post('/data', (request, response) => {
 		const medParam = dataObj.parameter;
 		const value = dataObj.value;
 
-		if (medParam !== 'pulse' && medParam !== 'calories' && medParam !== 'meditation' && medParam !== 'distance') {
+		if (!['pulse', 'calories', 'meditation', 'distance'].includes(medParam)) {
 			const errorAnswer = {
 				message: 'parameter must belong to enum'
 			};
@@ -124,7 +72,7 @@ app.post('/data', (request, response) => {
 			response.end(JSON.stringify(errorAnswer))
 		}
 
-		makeQuery('INSERT INTO medParameters (medParam, medParamValue) VALUES (\'' + medParam + '\', ' + value + ');', {}, () => {
+		makeQuery(`INSERT INTO medParameters (medParam, medParamValue) VALUES ('${medParam}', ${value});`, {}, () => {
 			const answer = {
 				message: 'ADDING_SUCCESS'
 			};
