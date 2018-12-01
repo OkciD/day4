@@ -85,11 +85,6 @@ app.get('/data', (request, response) => {
 	const offset = +request.query.offset;
 	const limit = +request.query.limit;
 
-	if (Object.keys(errorObject).length > 0) {
-		response.statusCode = 400;
-		response.end(JSON.stringify(errorObject));
-	}
-
 	let queryResult = {};
 	makeQuery('SELECT (med_param, med_param_value) FROM med_params OFFSET ' + offset + ' LIMIT ' + limit, queryResult, () => {
 		response.end(JSON.stringify(queryResult.arr));
