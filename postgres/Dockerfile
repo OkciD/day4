@@ -19,7 +19,7 @@ RUN sed -i '/listen_addresses/s/^#//g' $PG_CONF_FILE
 RUN sed -i '/listen_addresses/s/localhost/*/g' $PG_CONF_FILE
 RUN sed -i '/password_encryption/s/^#//g' $PG_CONF_FILE
 
-ENV PG_HBA /etc/postgresql/9.5/main/pg_hba.conf
+ENV PG_HBA /etc/postgresql/$PGVER/main/pg_hba.conf
 
 RUN echo "host all all 0.0.0.0/0 md5" >> $PG_HBA
 RUN echo "host all all ::0/0 md5" >> $PG_HBA
