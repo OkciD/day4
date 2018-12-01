@@ -21,7 +21,9 @@ RUN sed -i '/password_encryption/s/^#//g' $PG_CONF_FILE
 
 ENV PG_HBA /etc/postgresql/9.5/main/pg_hba.conf
 
-RUN echo "host     all             all             10.0.0.0/8              md5" >> $PG_HBA
+RUN echo "host all all 0.0.0.0/0 md5" >> $PG_HBA
+RUN echo "host all all ::0/0 md5" >> $PG_HBA
+RUN echo "host all all all md5" >> $PG_HBA
 
 EXPOSE 5432
 
