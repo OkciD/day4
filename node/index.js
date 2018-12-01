@@ -36,7 +36,7 @@ function makeQuery(query, resultObj, callback) {
 }
 
 // Создаем таблицу medParameters
-makeQuery('CREATE TABLE IF NOT EXISTS medParameters (med_param_id BIGSERIAL PRIMARY KEY, medParam TEXT, medParamValue FLOAT);', {}, () => {
+makeQuery('CREATE TABLE IF NOT EXISTS medParameters (med_param_id BIGSERIAL PRIMARY KEY, med_param TEXT, med_param_value FLOAT);', {}, () => {
 	console.log('table medParametrs was created')
 });
 
@@ -72,7 +72,7 @@ app.post('/data', (request, response) => {
 			response.end(JSON.stringify(errorAnswer));
 		}
 
-		makeQuery(`INSERT INTO medParameters (medParam, medParamValue) VALUES ('${medParam}', ${value});`, {}, () => {
+		makeQuery("INSERT INTO med_params (med_param, med_param_value) VALUES ('" + medParam + "', " + value + ");", {}, () => {
 			const answer = {
 				message: 'ADDING_SUCCESS'
 			};
@@ -101,7 +101,7 @@ app.get('/data', (request, response) => {
 	}
 
 	const queryResult = { arr: [] };
-	makeQuery(`SELECT (medParam, medParamValue) FROM medParameters OFFSET ${offset} LIMIT ${limit}`, queryResult, () => {
+	makeQuery('SELECT (med_param, med_param_value) FROM med_params OFFSET ' + offset + ' LIMIT ' + limit, queryResult, () => {
 		response.end(JSON.stringify(queryResult.arr));
 	});
 });
