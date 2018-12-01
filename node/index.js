@@ -84,16 +84,6 @@ app.post('/data', (request, response) => {
 app.get('/data', (request, response) => {
 	const offset = +request.query.offset;
 	const limit = +request.query.limit;
-	const errorObject = [offset, limit].reduce(
-		(errorObject, param) => {
-			if (isNaN(param)) {
-				return Object.assign(errorObject, { [param]: 'NaN' });
-			} else {
-				return errorObject;
-			}
-		},
-		{}
-	);
 
 	if (Object.keys(errorObject).length > 0) {
 		response.statusCode = 400;
