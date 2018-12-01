@@ -16,7 +16,7 @@ app.use(function(req, res, next) {
 function createNewClient() {
 	return new pg.Client({
 		user: 'postgres',
-		host: '10.0.0.72',
+		host: '10.0.0.83',
 		database: 'my_database',
 		password: '12345',
 		port: 5432
