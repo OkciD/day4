@@ -64,7 +64,7 @@ app.post('/data', (request, response) => {
 		const medParam = dataObj.parameter;
 		const value = dataObj.value;
 
-		if (!['pulse', 'calories', 'meditation', 'distance'].includes(medParam)) {
+		if (['pulse', 'calories', 'meditation', 'distance'].indexOf(medParam) === -1) {
 			const errorAnswer = {
 				message: 'parameter must belong to enum'
 			};
