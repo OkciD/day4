@@ -82,8 +82,8 @@ app.post('/data', (request, response) => {
 });
 
 app.get('/data', (request, response) => {
-	const offset = +request.query.offset;
-	const limit = +request.query.limit;
+	const offset = +request.query.offset || 0;
+	const limit = +request.query.limit || 2;
 
 	let queryResult = {};
 	makeQuery('SELECT (med_param, med_param_value) FROM med_params OFFSET ' + offset + ' LIMIT ' + limit, queryResult, () => {
