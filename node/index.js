@@ -35,8 +35,8 @@ function makeQuery(query, resultObj, callback) {
 	});
 }
 
-// Создаем таблицу medParameters
-makeQuery('CREATE TABLE IF NOT EXISTS medParameters (med_param_id BIGSERIAL PRIMARY KEY, med_param TEXT, med_param_value FLOAT);', {}, () => {
+// Создаем таблицу med_params
+makeQuery('CREATE TABLE IF NOT EXISTS med_params (med_param_id BIGSERIAL PRIMARY KEY, med_param TEXT, med_param_value FLOAT);', {}, () => {
 	console.log('table medParametrs was created')
 });
 
@@ -81,30 +81,30 @@ app.post('/data', (request, response) => {
 	});
 });
 
-app.get('/data', (request, response) => {
-	const offset = +request.query.offset;
-	const limit = +request.query.limit;
-	const errorObject = [offset, limit].reduce(
-		(errorObject, param) => {
-			if (isNaN(param)) {
-				return Object.assign(errorObject, { [param]: 'NaN' });
-			} else {
-				return errorObject;
-			}
-		},
-		{}
-	);
-
-	if (Object.keys(errorObject).length > 0) {
-		response.statusCode = 400;
-		response.end(JSON.stringify(errorObject));
-	}
-
-	const queryResult = { arr: [] };
-	makeQuery('SELECT (med_param, med_param_value) FROM med_params OFFSET ' + offset + ' LIMIT ' + limit, queryResult, () => {
-		response.end(JSON.stringify(queryResult.arr));
-	});
-});
+// app.get('/data', (request, response) => {
+// 	const offset = +request.query.offset;
+// 	const limit = +request.query.limit;
+// 	const errorObject = [offset, limit].reduce(
+// 		(errorObject, param) => {
+// 			if (isNaN(param)) {
+// 				return Object.assign(errorObject, { [param]: 'NaN' });
+// 			} else {
+// 				return errorObject;
+// 			}
+// 		},
+// 		{}
+// 	);
+//
+// 	if (Object.keys(errorObject).length > 0) {
+// 		response.statusCode = 400;
+// 		response.end(JSON.stringify(errorObject));
+// 	}
+//
+// 	const queryResult = { arr: [] };
+// 	makeQuery('SELECT (med_param, med_param_value) FROM med_params OFFSET ' + offset + ' LIMIT ' + limit, queryResult, () => {
+// 		response.end(JSON.stringify(queryResult.arr));
+// 	});
+// });
 
 // Запускаем сервер
 const port = 80;
