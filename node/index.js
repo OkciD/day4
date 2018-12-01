@@ -82,13 +82,12 @@ app.post('/data', (request, response) => {
 });
 
 app.get('/data', (request, response) => {
-	const { offset, limit } = request.query;
+	const offset = +request.query.offset;
+	const limit = +request.query.limit;
 	const errorObject = [offset, limit].reduce(
 		(errorObject, param) => {
-			if (!param) {
-				return { [param]: 'undefined', ...errorObject };
-			} else if (isNaN(+param)) {
-				return { [param]: 'NaN', ...errorObject }
+			if (isNaN(param)) {
+				return Object.assign(errorObject, { [param]: 'NaN' });
 			} else {
 				return errorObject;
 			}
